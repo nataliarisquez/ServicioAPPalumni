@@ -1,0 +1,25 @@
+{
+    "name": "Appalumni",
+    "version": "1.0.0",
+    "keywords": [
+        "util",
+        "functional",
+        "server",
+        "client",
+        "browser"
+    ],
+    "author": "natal",
+    "contributors": [],
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "jsonwebtoken": "^8.1.1",
+        "mongodb": "^2.2.33",
+        "save": "^2.3.2",
+        "swig": "^1.4.2"
+    },
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js"
+    }
+}
