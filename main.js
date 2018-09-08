@@ -335,7 +335,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 //    console.log("servidoractivo");
 //});
 
-app.listen(process.env.PORT,function(){
+app.listen(process.env.PORT|| 8080,function(){
     
    console.log("servidoractivo");
 });
