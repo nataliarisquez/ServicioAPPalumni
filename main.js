@@ -330,10 +330,79 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
     }); 
 });
 
-//app.listen(8080,function(){
+//Obtener todo de la base de datos estudios
+app.get("/estudios",function(req,res){ 
     
-//    console.log("servidoractivo");
-//});
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+         
+        //var alumno = new Alumnos(req.body.Nombre,req.body.Apellido1,req.body.Apellido2,req.body.Email,req.body.Estudio.req.body.Convocatoria); 
+          
+        var collection = db.collection('Estudios'); 
+        collection.find({}).toArray(function(err, result){
+            
+            if(err)
+            {
+              res.status(400);//Bad request
+              res.json({
+                 mensaje: "Error al buscar la lista de estudios",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            }
+        });
+      } 
+    }); 
+});
+
+
+
+//Obtener todo de la base de datos convocatorias
+app.get("/convocatorias",function(req,res){ 
+    
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+         
+        //var alumno = new Alumnos(req.body.Nombre,req.body.Apellido1,req.body.Apellido2,req.body.Email,req.body.Estudio.req.body.Convocatoria); 
+          
+        var collection = db.collection('Convocatorias'); 
+        collection.find({}).toArray(function(err, result){
+            
+            if(err)
+            {
+              res.status(400);//Bad request
+              res.json({
+                 mensaje: "Error al buscar la lista de convocatorias",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            }
+        });
+      } 
+    }); 
+});
 
 app.listen(process.env.PORT|| 8080,function(){
     
