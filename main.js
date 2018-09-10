@@ -400,8 +400,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
          });
       } else { 
         console.log("Conectado al servidor") ;
-        console.log(req.body.detalles);
-         
+        
         var convocatoria = new Convocatorias(req.body.nombre,req.body.fechainicio,req.body.fechafin,req.body.estadoactivo,req.body.estudios); 
           
         var collection = db.collection('Convocatorias'); 
