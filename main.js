@@ -102,6 +102,29 @@ function Estudios(Nombre)
     this.nombre=Nombre;
 }
 
+function Empresas(Nombre,CIF,Direccion,Telefono,Email)
+{
+    this.nombre=Nombre;
+    this.cif=CIF;
+    this.direccion=Direccion;
+    this.telefono=Telefono;
+    this.email=Email;
+}
+
+
+function GestionEmpresa(Empresa,Convocatoria,Estudio,Alumnosgestion)
+{
+    this.empresa=Empresa;
+    this.convocatoria=Convocatoria;
+    this.estudio=Estudio;
+    this.alumnosgestion=Alumnosgestion;
+}
+
+function Alumnosgestion(Nombre,Estado)
+{
+    this.nombre=Nombre;
+    this.estado=Estado;
+}
 
 
 //Insertar un registro en la base de datos
@@ -380,11 +403,6 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
       } 
     }); 
 });
-
-
-
-//Obtener todo de la base de datos convocatorias
-app.get("/convocatorias",function(req,res){ 
     
     
     //Insertar un registro en la base de datos convocatorias
@@ -468,7 +486,8 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 });
 
     
-    
+//Obtener todo de la base de datos convocatorias
+app.get("/convocatorias",function(req,res){     
 MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
  function(err, db) { 
       if (err) { 
@@ -500,6 +519,361 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
       } 
     }); 
 });
+
+
+//Obtener todo de la base de datos estudios
+app.get("/empresas",function(req,res){ 
+    
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+        
+          
+        var collection = db.collection('Empresas'); 
+        collection.find({}).toArray(function(err, result){
+            
+            if(err)
+            {
+              res.status(400);//Bad request
+              res.json({
+                 mensaje: "Error al buscar la lista de empresas",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            }
+        });
+      } 
+    }); 
+});
+
+
+//Insertar un registro en la base de datos convocatorias
+app.post("/empresa",function(req,res){
+      
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+        
+        var empresa = new Empresas(req.body.nombre,req.body.cif,req.body.direccion,req.body.telefono,req.body.email); 
+          
+        var collection = db.collection('Empresas'); 
+        collection.insert(empresa, function (err, result) { 
+            if (err) { 
+              res.status(404);//no found
+              res.json({
+                 mensaje: "Error al insertar una empresa",
+                 insertado:false
+              });
+            } else { 
+             res.status(201);//create
+             res.json({
+                 insertado:true
+             });
+            } 
+            // Cerrar el cliente 
+            db.close(); 
+        }); 
+      } 
+    }); 
+});
+    
+        
+//Modifica una empresa
+app.post("/empresas/:id",function(req,res){ 
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+          
+          var id=require('mongodb').ObjectID(req.params.id);
+        console.log("Conectado al servidor") ;
+         
+        var empresa = new Empresas(req.body.nombre,req.body.cif,req.body.direccion,req.body.telefono,req.body.email); 
+          
+        var collection = db.collection('Empresas'); 
+        collection.update({_id:id},empresa,function(err, result){ 
+            if(err){
+                
+                res.status(404);//no found
+                res.json({
+                  modificado:false
+              });
+            }else
+            {
+                res.status(201);//ok 
+                res.json({
+                    modificado:true
+                });
+                
+                
+            }
+             // Cerrar el cliente 
+            db.close(); 
+      
+     }); 
+      } 
+    }); 
+});
+
+
+app.get("/estados",function(req,res){ 
+    
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+         
+        //var alumno = new Alumnos(req.body.Nombre,req.body.Apellido1,req.body.Apellido2,req.body.Email,req.body.Estudio.req.body.Convocatoria); 
+          
+        var collection = db.collection('Estados'); 
+        collection.find({}).toArray(function(err, result){
+            
+            if(err)
+            {
+              res.status(400);//Bad request
+              res.json({
+                 mensaje: "Error al buscar la lista de estados",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            }
+        });
+      } 
+    }); 
+});
+
+
+
+
+//Insertar un registro en la base de datos convocatorias
+app.post("/empresa",function(req,res){
+      
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+        
+        var empresa = new Empresas(req.body.nombre,req.body.cif,req.body.direccion,req.body.telefono,req.body.email); 
+          
+        var collection = db.collection('Empresas'); 
+        collection.insert(empresa, function (err, result) { 
+            if (err) { 
+              res.status(404);//no found
+              res.json({
+                 mensaje: "Error al insertar una empresa",
+                 insertado:false
+              });
+            } else { 
+             res.status(201);//create
+             res.json({
+                 insertado:true
+             });
+            } 
+            // Cerrar el cliente 
+            db.close(); 
+        }); 
+      } 
+    }); 
+});
+    
+        
+//Modifica una empresa
+app.post("/empresas/:id",function(req,res){ 
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+          
+          var id=require('mongodb').ObjectID(req.params.id);
+        console.log("Conectado al servidor") ;
+         
+        var empresa = new Empresas(req.body.nombre,req.body.cif,req.body.direccion,req.body.telefono,req.body.email); 
+          
+        var collection = db.collection('Empresas'); 
+        collection.update({_id:id},empresa,function(err, result){ 
+            if(err){
+                
+                res.status(404);//no found
+                res.json({
+                  modificado:false
+              });
+            }else
+            {
+                res.status(201);//ok 
+                res.json({
+                    modificado:true
+                });
+                
+                
+            }
+             // Cerrar el cliente 
+            db.close(); 
+      
+     }); 
+      } 
+    }); 
+});
+
+//Obtener todo de la base de datos estudios
+app.get("/gestionempresas",function(req,res){ 
+    
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+        
+          
+        var collection = db.collection('GestionEmpresa'); 
+        collection.find({}).toArray(function(err, result){
+            
+            if(err)
+            {
+              res.status(400);//Bad request
+              res.json({
+                 mensaje: "Error al buscar la lista de gestion de empresas",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            }
+        });
+      } 
+    }); 
+});
+
+
+
+//Insertar un registro en la base de datos
+app.post("/gestionempresas",function(req,res){
+     
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+        console.log(req.body.detalles);
+         
+        var gestionempresa = new GestionEmpresa(req.body.empresa,req.body.convocatoria,req.body.estudio,req.body.alumnosgestion); 
+          
+        var collection = db.collection('GestionEmpresa'); 
+        collection.insert(gestionempresa, function (err, result) { 
+            if (err) { 
+              res.status(404);//no found
+              res.json({
+                 mensaje: "Error al insertar una gestión de empresa",
+                 insertado:false
+              });
+            } else { 
+             res.status(201);//create
+             res.json({
+                 insertado:true
+             });
+            } 
+            // Cerrar el cliente 
+            db.close(); 
+        }); 
+      } 
+    }); 
+});
+
+
+
+//Modifica una empresa
+app.post("/gestionempresas/:id",function(req,res){ 
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+          
+          var id=require('mongodb').ObjectID(req.params.id);
+        console.log("Conectado al servidor") ;
+         
+        var empresa = new GestionEmpresa(req.body.empresa,req.body.convocatoria,req.body.estudio,req.body.alumnosgestion); 
+          
+        var collection = db.collection('GestionEmpresa'); 
+        collection.update({_id:id},empresa,function(err, result){ 
+            if(err){
+                
+                res.status(404);//no found
+                res.json({
+                  modificado:false
+              });
+            }else
+            {
+                res.status(201);//ok 
+                res.json({
+                    modificado:true
+                });
+                
+                
+            }
+             // Cerrar el cliente 
+            db.close(); 
+      
+     }); 
+      } 
+    }); 
+});
+
+
 
 app.listen(process.env.PORT|| 8080,function(){
     
