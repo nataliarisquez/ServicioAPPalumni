@@ -12,9 +12,11 @@
     "contributors": [],
     "dependencies": {
         "body-parser": "^1.18.2",
+        "cloudinary": "^1.11.0",
         "express": "^4.16.2",
         "jsonwebtoken": "^8.1.1",
         "mongodb": "^2.2.33",
+        "multer": "^1.4.0",
         "save": "^2.3.2",
         "swig": "^1.4.2"
     },

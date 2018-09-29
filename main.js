@@ -5,12 +5,26 @@ var app=express();
 var bodyParser=require("body-parser");
 app.use(bodyParser());
 app.use(express.static("public"));
+var multer=require('multer');
+//app.use(multer({dest:"./uploads"}));
+var uploader = multer({dest: "./uploads"});
+var middleware_upload = uploader.single('imagen');
+
 
 var swig=require('swig');
 var MongoClient=require('mongodb').MongoClient;
 
 const crypto=require('crypto');
 const secreto='abcdefg';
+
+
+var cloudinary=require('cloudinary');
+
+cloudinary.config({
+    cloud_name:"dht4aj0pv",
+    api_key:"216922815544964",
+    api_secret:"4RClXmOoPzODWV2vxAR7qVUjlvM"
+});
 
 var jwt=require('jsonwebtoken');
 
@@ -50,12 +64,13 @@ rutasProtegidas.use(function(req, res, next) {
 }); 
 
 app.use('/alumno', rutasProtegidas); 
+app.use('/alumno'); 
  
 
         
     
 
-function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,Detalles)
+function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,imageurl,Detalles)
 {
     this.nombre=Nombre;
     this.apellido1=Apellido1;
@@ -63,6 +78,7 @@ function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,Detalles)
     this.email=Email;
     this.telefono=Telefono;
     this.DNI=DNI;
+    this.imageurl=imageurl;
     this.detalles=Detalles;
 }
 
@@ -136,7 +152,7 @@ function GestionAlumno(Nombre,Convocatoria,Estudio,Empresagestion)
 
 
 //Insertar un registro en la base de datos
-app.post("/alumno",function(req,res){
+app.post("/alumno",middleware_upload,function(req,res){
      
     
 MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
@@ -148,9 +164,18 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
          });
       } else { 
         console.log("Conectado al servidor") ;
-        console.log(req.body.detalles);
+                  
+                 
+        var resulturl;
+         console.log(req.file.path);
+         cloudinary.uploader.upload(req.file.path, function(result) 
+         { 
+             console.log(result);
+            resulturl=result.url;
+            
          
-        var alumno = new Alumnos(req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.email,req.body.telefono,req.body.DNI,req.body.detalles); 
+         console.log(resulturl);
+        var alumno = new Alumnos(req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.email,req.body.telefono,req.body.DNI,resulturl,req.body.detalles); 
           
         var collection = db.collection('Alumnos'); 
         collection.insert(alumno, function (err, result) { 
@@ -168,7 +193,8 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
             } 
             // Cerrar el cliente 
             db.close(); 
-        }); 
+            });
+       }); 
       } 
     }); 
 });
@@ -882,7 +908,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 });
 
 
-//Obtener todo de la base de datos estudios
+//Obtener todo de la base de datos gestion alumnos
 app.get("/gestionalumnos",function(req,res){ 
     
     
@@ -959,6 +985,8 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 
 
 
+
+
 //Modifica una empresa
 app.post("/gestionalumnos/:id",function(req,res){ 
     
@@ -1000,7 +1028,6 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
       } 
     }); 
 });
-
 
 
 app.listen(process.env.PORT|| 8080,function(){
