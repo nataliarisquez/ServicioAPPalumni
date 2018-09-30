@@ -167,7 +167,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
                   
                  
         var resulturl;
-         console.log(req.file.path);
+         console.log(req.file);
          cloudinary.uploader.upload(req.file.path, function(result) 
          { 
              console.log(result);
@@ -1025,6 +1025,39 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
             db.close(); 
       
      }); 
+      } 
+    }); 
+});
+
+
+
+//Insertar un registro en la base de datos
+app.post("/subirimagen",middleware_upload,function(req,res){
+     
+    
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+                  
+                 
+        var resulturl;
+         console.log(req.file);
+         cloudinary.uploader.upload(req.file.path, function(result) 
+         { 
+             console.log(result);
+            resulturl=result.url;
+            
+         
+         console.log(resulturl);
+        
+       
+       }); 
       } 
     }); 
 });
