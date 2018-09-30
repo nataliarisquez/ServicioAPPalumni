@@ -63,8 +63,8 @@ rutasProtegidas.use(function(req, res, next) {
   } 
 }); 
 
-app.use('/alumno', rutasProtegidas); 
-app.use('/alumno'); 
+//app.use('/alumno', rutasProtegidas); 
+//app.use('/alumno'); 
  
 
         
