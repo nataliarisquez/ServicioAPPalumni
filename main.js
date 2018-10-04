@@ -70,7 +70,7 @@ rutasProtegidas.use(function(req, res, next) {
         
     
 
-function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,imageurl,Detalles)
+function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,Detalles)
 {
     this.nombre=Nombre;
     this.apellido1=Apellido1;
@@ -78,8 +78,13 @@ function Alumnos(Nombre,Apellido1,Apellido2,Email,Telefono,DNI,imageurl,Detalles
     this.email=Email;
     this.telefono=Telefono;
     this.DNI=DNI;
-    this.imageurl=imageurl;
     this.detalles=Detalles;
+}
+
+function AlumnosImagenes(Imageurl,idAlumno)
+{
+    this.imageurl=Imageurl;
+    this.idalumno=idAlumno;
 }
 
 function Detalles(Estudio,Convocatoria,Empresas)
@@ -152,7 +157,7 @@ function GestionAlumno(Nombre,Convocatoria,Estudio,Empresagestion)
 
 
 //Insertar un registro en la base de datos
-app.post("/alumno",middleware_upload,function(req,res){
+app.post("/alumno",function(req,res){
      
     
 MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
@@ -164,17 +169,8 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
          });
       } else { 
         console.log("Conectado al servidor") ;
-                  
-                 
-        var resulturl;
-         console.log(req.file);
-         cloudinary.uploader.upload(req.file.path, function(result) 
-         { 
-             console.log(result);
-            resulturl=result.url;
-            
+  
          
-         console.log(resulturl);
         var alumno = new Alumnos(req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.email,req.body.telefono,req.body.DNI,resulturl,req.body.detalles); 
           
         var collection = db.collection('Alumnos'); 
@@ -194,7 +190,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
             // Cerrar el cliente 
             db.close(); 
             });
-       }); 
+        
       } 
     }); 
 });
@@ -1052,10 +1048,25 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
          { 
              console.log(result);
             resulturl=result.url;
-            
-         
-         console.log(resulturl);
-        
+            var alumno = new AlumnosImagenes(req.body.imageurl,req.body.idalumno); 
+          
+            var collection = db.collection('AlumnosImagen'); 
+            collection.insert(alumno, function (err, result) { 
+            if (err) { 
+              res.status(404);//no found
+              res.json({
+                 mensaje: "Error al insertar un alumno",
+                 insertado:false
+              });
+            } else { 
+             res.status(201);//create
+             res.json({
+                 insertado:true
+             });
+            } 
+            // Cerrar el cliente 
+            db.close(); 
+            });
        
        }); 
       } 
