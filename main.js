@@ -984,7 +984,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 
 
 //Modifica una empresa
-app.post("/gestionalumnos/:id",function(req,res){ 
+app.post("/gestionalumnos",function(req,res){ 
     
 MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
  function(err, db) { 
@@ -1070,6 +1070,44 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
        
        }); 
       } 
+    }); 
+});
+
+
+
+app.get("/subirimagen/:id",function(req,res){
+     
+MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+      if (err) { 
+         res.status(500);
+         res.json({
+             conexion:false
+         });
+      } else { 
+        console.log("Conectado al servidor") ;
+         var id=require('mongodb').ObjectID(req.params.id);
+         
+          
+            var collection = db.collection('AlumnosImagen'); 
+            
+            collection.find({idalumno:id}).toArray(function(err, result){ 
+            
+            if(err)
+            {
+                res.status(400);
+                res.json({
+                 mensaje: "Error al buscar un imagen en la base de datos",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+            } 
+   
+           });      
+        } 
     }); 
 });
 
