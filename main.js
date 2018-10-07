@@ -1031,19 +1031,17 @@ app.get("/subirimagen/:id",function(req,res){
  
     MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
  function(err, db) { 
-     
       if (err) { 
          res.status(500);//bad request
          res.json({
              conexion:false
          });
       } else { 
-          
-        var id=require('mongodb').ObjectID(req.params.id);
+          console.log(req.params.id);
+        //var id=require('mongodb').ObjectID(req.params.id);
         console.log("Conectado al servidor") ;
-          
         var collection = db.collection('AlumnosImagen'); 
-        collection.find({idalumno:id}).toArray(function(err, result){ 
+        collection.find({idalumno:req.params.id}).toArray(function(err, result){ 
             db.close();
             if(err)
             {
