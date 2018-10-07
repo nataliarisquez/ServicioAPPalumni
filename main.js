@@ -171,7 +171,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
         console.log("Conectado al servidor") ;
   
          
-        var alumno = new Alumnos(req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.email,req.body.telefono,req.body.DNI,resulturl,req.body.detalles); 
+        var alumno = new Alumnos(req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.email,req.body.telefono,req.body.DNI,req.body.detalles); 
           
         var collection = db.collection('Alumnos'); 
         collection.insert(alumno, function (err, result) { 
