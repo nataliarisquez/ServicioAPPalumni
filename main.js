@@ -1085,7 +1085,7 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
          { 
              console.log(result);
             resulturl=result.url;
-            var alumno = new AlumnosImagenes(req.body.imageurl,req.body.idalumno); 
+            var alumno = new AlumnosImagenes(resulturl,req.body.idalumno); 
           
             var collection = db.collection('AlumnosImagen'); 
             collection.insert(alumno, function (err, result) { 
