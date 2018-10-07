@@ -1027,6 +1027,45 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 
 
 
+app.get("/subirimagen/:id",function(req,res){
+ 
+    MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
+ function(err, db) { 
+     
+      if (err) { 
+         res.status(500);//bad request
+         res.json({
+             conexion:false
+         });
+      } else { 
+          
+        var id=require('mongodb').ObjectID(req.params.id);
+        console.log("Conectado al servidor") ;
+          
+        var collection = db.collection('AlumnosImagen'); 
+        collection.find({idalumno:id}).toArray(function(err, result){ 
+            db.close();
+            if(err)
+            {
+                res.status(400);
+                res.json({
+                 mensaje: "Error al buscar un alumno",
+                 busqueda:false
+              });
+            }else{
+                db.close();
+                
+                res.status(200);//ok
+                res.send(JSON.stringify(result)); 
+    
+            } 
+        });
+      } 
+    }); 
+});
+
+
+
 //Insertar un registro en la base de datos
 app.post("/subirimagen",middleware_upload,function(req,res){
      
@@ -1075,41 +1114,6 @@ MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
 
 
 
-app.get("/subirimagen/:id",function(req,res){
-     
-MongoClient.connect('mongodb://admin:adminx1@ds143262.mlab.com:43262/alumniapp',
- function(err, db) { 
-      if (err) { 
-         res.status(500);
-         res.json({
-             conexion:false
-         });
-      } else { 
-        console.log("Conectado al servidor") ;
-         var id=require('mongodb').ObjectID(req.params.id);
-         
-          
-            var collection = db.collection('AlumnosImagen'); 
-            
-            collection.find({idalumno:id}).toArray(function(err, result){ 
-            
-            if(err)
-            {
-                res.status(400);
-                res.json({
-                 mensaje: "Error al buscar un imagen en la base de datos",
-                 busqueda:false
-              });
-            }else{
-                db.close();
-                res.status(200);//ok
-                res.send(JSON.stringify(result)); 
-            } 
-   
-           });      
-        } 
-    }); 
-});
 
 
 app.listen(process.env.PORT|| 8080,function(){
